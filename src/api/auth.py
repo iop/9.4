@@ -1,4 +1,4 @@
-"""Authentication: log a user in and hand back an access token."""
+"""Authentication: log a user in, hand back a token, refresh it on expiry."""
 
 from api import token
 
@@ -9,9 +9,9 @@ def login(user_id):
 
 
 def authorize(tok):
-    """Allow the request only while the token is still valid.
+    """Refresh the token when it has expired, then allow the request.
 
-    Base behaviour: an expired token is rejected and the caller has to log in
-    again. The feat/token-refresh branch teaches this to refresh instead.
+    The request no longer fails on an expired token: we transparently
+    re-issue it and carry on. Returns the (possibly refreshed) token.
     """
-    return token.is_valid(tok)
+    return token.refresh(tok)

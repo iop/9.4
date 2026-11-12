@@ -1,9 +1,4 @@
-"""Access-token issuance.
-
-Base version: tokens carry an expiry, but there is no refresh — an expired
-token is simply invalid. The feat/token-refresh branch adds the refresh path,
-and that branch-vs-main diff is what the agent summarises into a PR description.
-"""
+"""Access-token issuance and refresh."""
 
 import time
 
@@ -27,3 +22,10 @@ def issue(user_id):
 def is_valid(token):
     """True while the token has not reached its expiry."""
     return token.get("expires_at", 0) > now()
+
+
+def refresh(token):
+    """Return a still-valid token, re-issuing it when it has expired."""
+    if is_valid(token):
+        return token
+    return issue(token["user_id"])
